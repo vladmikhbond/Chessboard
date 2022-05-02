@@ -8,17 +8,16 @@ main :: IO ()
 main = mainHorse
 
 mainHorse = do 
-   putStr " nxy > "
+   putStrLn " nxy> "
    s <- getLine
-   let a = [read [x] | x <- s, x /= ' ']
+   let [n, x ,y] = [read [x] | x <- s, x /= ' ']
 
    t0 <- getCurrentTime
    print $ "--- start --- " ++ show t0
    ---
-   print $ runHorse (a!!0) (a!!1) (a!!2)
+   print $ runHorse n (x, y)
    ---
    t1 <- getCurrentTime
-   putStr "--- time ---"
-   print $  diffUTCTime t1 t0
+   putStrLn $ "--- time --- " ++ show (diffUTCTime t1 t0)
 
 
