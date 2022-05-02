@@ -25,7 +25,8 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Horse
+      Queens
   other-modules:
       Paths_Chessboard
   hs-source-dirs:
