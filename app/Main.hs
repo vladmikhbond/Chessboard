@@ -1,48 +1,37 @@
+
 module Main where
 
 import Queens
 import Horse
-import Data.Time.Clock ( diffUTCTime, getCurrentTime )
+import Data.Time ( diffUTCTime, getCurrentTime )
 import System.IO (hFlush, stdout )
 import Data.List.Split ( splitOn )
+import Control.Monad (when)
 
 main :: IO ()
 main = mainHorse
 
 mainHorse = do
-   (r, c) : start : finish <- getPairs " rc st fi > "
-   --closed <- getPairs " closed: xy xy ... > "
-   let closed = []
-   ---------------------------------------
-   t0 <- getCurrentTime
-   print $ "--- start --- " ++ show t0
-   ---
-   let pathes = runHorse r c start closed
-   let validPathes = if null finish 
-       then pathes 
-       else filter (\p -> head p == head finish ) pathes 
-   if null validPathes
-   then putStr "no answers"
-   else do
-      let path = head validPathes
-      putStrLn $ showOnePath path r c closed
-   ---
-   t1 <- getCurrentTime
-   putStrLn $ "--- time --- " ++ show (diffUTCTime t1 t0)
-
-
-getPairs :: String -> IO [(Int, Int)]
-getPairs prompt = do
-   putStr prompt
+   putStr "q-quit | nRows nCols  row col [c] > "  -- 8 8 1 2 c
    hFlush stdout
-   str <- getLine
-   let ns = if null str 
-       then [] 
-       else read <$> splitOn " " str
-   return $ map (`divMod` 10) ns
-   
+   line <- getLine
+   let isClose = 'c' `elem` line 
+   let line' = if isClose 
+                then take (length line - 2) line 
+                else line
 
+   when ('q' `notElem` line') (do 
+      let [nRows, nCols, r, c] = map read (splitOn " " line')
 
+      t0 <- getCurrentTime
+      print $ "--- start --- " ++ show t0
+      ---
+      let pathes = runHorse nRows nCols (r, c) isClose  -- < main part
 
-
-  
+      if null pathes
+      then putStr "no answers"
+      else putStrLn $ showOnePath (head pathes) nRows nCols
+      ---
+      t1 <-getCurrentTime
+      putStrLn ("--- time --- " ++ show (diffUTCTime t1 t0))
+      mainHorse )      
