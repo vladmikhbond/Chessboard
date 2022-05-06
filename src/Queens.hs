@@ -1,7 +1,7 @@
 -------------------------
 -- Задачі на шахівниці --
 -------------------------
-module Queens (runQueens) where
+module Queens (runQueens, showOneState) where
 
 --{-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
@@ -9,12 +9,12 @@ module Queens (runQueens) where
 
 -- Розставити на шахівниці розміром n х n рівно n ферзів так, 
 -- щоб вони не били один одного.
-type Line = [Int]
+type State = [Int]
 
-runQueens :: Int -> [Line]
+runQueens :: Int -> [State]
 runQueens = queens [[]] 0
 
-queens :: [Line] -> Int-> Int -> [Line]
+queens :: [State] -> Int-> Int -> [State]
 queens lines k n | k == n = lines
 queens lines k n  = do
    line <- lines
@@ -23,5 +23,15 @@ queens lines k n  = do
     where
       ok q line = and [ok1 q x i | (x, i) <- zip line [0..]]
       ok1 q x i = (q /= x) && abs (q - x) /= i + 1
+
+
+showOneState :: State -> String
+showOneState state = let
+   n = length state
+   line k = replicate k '.' ++ 'Q' : replicate (n - k - 1) '.'
+   line' k = concatMap  (: "  ") (line k)  ++ "\n"
+ in
+   concatMap line' state
+
 
 
